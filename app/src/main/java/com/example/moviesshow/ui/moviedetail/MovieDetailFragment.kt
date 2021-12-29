@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.navGraphViewModels
+import com.example.moviesshow.R
 import com.example.moviesshow.R.string
 import com.example.moviesshow.arch.BaseFragment
 import com.example.moviesshow.arch.ViewState.Empty

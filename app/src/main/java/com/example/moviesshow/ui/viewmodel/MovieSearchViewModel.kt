@@ -8,9 +8,14 @@ import com.example.moviesshow.datasource.model.MovieData
 import com.example.moviesshow.datasource.model.MovieDetailData
 import com.example.moviesshow.datasource.repository.IMovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -19,7 +24,20 @@ class MovieSearchViewModel @Inject constructor(
     private val repository: IMovieRepository,
 ) : ViewModel() {
 
-    fun searchMovies(query: String, pageNo: Int = 1): StateFlow<ViewState<MovieData>> {
+//    private val _uiEvent = Channel<ViewState<MovieData>>()
+//    val uiEvent = _uiEvent.receiveAsFlow()
+
+//    private var query = MutableStateFlow<String>("").debounce(600)
+//        .filter {
+//            (it.isNotEmpty())
+//        }
+//
+//    fun query(search: String) {
+//
+//        query
+//    }
+
+    fun searchMovies(query: String, pageNo: Int = 1): Flow<ViewState<MovieData>> {
         return flow {
 
             when (val result = repository.fetchMovies(query, pageNo)) {
@@ -42,10 +60,11 @@ class MovieSearchViewModel @Inject constructor(
             }
 
         }.stateIn(
-            initialValue = ViewState.Loading,
             scope = viewModelScope,
+            initialValue = ViewState.Loading,
             // it tell the flow active only for 5 second if there is no collector
-            started = SharingStarted.WhileSubscribed(5000)
+            started = SharingStarted.WhileSubscribed(5000),
+
         )
 
     }
